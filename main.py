@@ -1,23 +1,23 @@
-import os
-from langchain.llms import HuggingFaceHub
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from dotenv import load_dotenv
-import warnings
-warnings.filterwarnings("ignore")
+import langchain_helper as lch
+import streamlit as st
 
-load_dotenv()
+st.title("Pet Name Generator")
 
-repo_id = "databricks/dolly-v2-3b"
+user_animal_type = st.sidebar.selectbox("What is your pet?", ("Cat", "Dog", "Hamster", "Cow"))
 
-def generate_pet_name(num_names=5):
-    llm = HuggingFaceHub(
-        repo_id=repo_id,
-        model_kwargs={"temperature": 0.5,
-                      "max_length": 64}
-    )
-    name = llm("I have a dog pet and I want a cool name for it. Suggest me a five cool names for my pet dog.")
-    return name
+if user_animal_type == "Cat":
+    pet_color = st.sidebar.text_area(label="What color is your cat",
+                                     max_chars=15)
+if user_animal_type == "Dog":
+    pet_color = st.sidebar.text_area(label="What color is your Dog",
+                                     max_chars=15)
+if user_animal_type == "Hamster":
+    pet_color = st.sidebar.text_area(label="What color is your Hamster",
+                                     max_chars=15)
+if user_animal_type == "Cow":
+    pet_color = st.sidebar.text_area(label="What color is your Cow",
+                                     max_chars=15)
 
-if __name__ == '__main__':
-    print(generate_pet_name())
+if pet_color:
+    response = lch.generate_pet_name(user_animal_type,pet_color)
+    st.text(response['pet_name'])
